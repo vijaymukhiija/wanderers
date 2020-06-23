@@ -10,14 +10,14 @@ router.post('/forgotPassword', authController.forgotPassword); //will reieve ema
 router.patch('/resetPassword/:token', authController.resetPassword); //will recieve token and updated password
 
 // Protect all routes after this middleware
-router.use(authController.protect); //this will check the user is logged in or not
+router.use(authController.protect); //this will check the user is logged in or not & protect all the routes come after this point
 
 router.patch('/updateMyPassword', authController.updatePassword);
 router.get('/me', userController.getMe, userController.getUser);
 router.patch('/updateMe', userController.updateMe);
 router.delete('/deleteMe', userController.deleteMe);
 
-router.use(authController.restrictTo('admin'));
+router.use(authController.restrictTo('admin')); //Only admins can create or delete any user
 
 router
   .route('/')
