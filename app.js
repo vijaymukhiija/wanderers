@@ -1,4 +1,5 @@
 const express = require('express');
+const path = require('path');
 const morgan = require('morgan');
 const rateLimit = require('express-rate-limit');
 const helmet = require('helmet');
@@ -14,7 +15,11 @@ const reviewRouter = require('./routes/reviewRoutes');
 
 const app = express();
 
+app.set('view engine', 'pug');
+app.set('views', path.join(__dirname, 'views'));
+
 // 1)GLOBAL MIDDLEWARES
+app.use(express.static(`${__dirname}/public`)); //for css img files
 
 //Set Security HTTP Headers
 app.use(helmet());
@@ -34,7 +39,6 @@ app.use('/api', limiter);
 
 //Body Parser,reading data from body into req.body
 app.use(express.json({ limit: '10kb' }));
-app.use(express.static(`${__dirname}/public`));
 
 //Data Sanitization against NoSql Query Injection
 app.use(mongoSanitize());
@@ -63,6 +67,10 @@ app.use((req, res, next) => {
 });
 
 // 3) ROUTES
+app.get('/', (req, res) => {
+  res.status(200).render('base');
+});
+
 app.use('/api/v1/tours', tourRouter);
 app.use('/api/v1/users', userRouter);
 app.use('/api/v1/reviews', reviewRouter);
